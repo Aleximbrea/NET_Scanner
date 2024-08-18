@@ -1,13 +1,14 @@
-import functions
+import scanner.utils as utils
+from scanner.network import Interface
 
 if __name__ == "__main__":
     
     # Checking if user has administrator privileges
-    if not functions.is_admin():
+    if not utils.is_admin():
         raise Exception('Administrator privileges missing!')
     
     # Interface checking
-    interfaces = functions.get_interfaces()
+    interfaces = utils.get_interfaces()
     # If there are multiple active interfaces i'll ask the user to choose the right one
     if len(interfaces) > 1:
         print(f'---- ACTIVE INTERFACES ----')
@@ -23,5 +24,6 @@ if __name__ == "__main__":
         raise Exception('No active interfaces.')
     
     # Creating interface object
+    interface = Interface(interface)
     
     

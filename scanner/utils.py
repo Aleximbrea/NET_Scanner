@@ -1,7 +1,6 @@
 import ctypes
 import sys
 import psutil
-import re
 
 def is_admin():
     if ctypes.windll.shell32.IsUserAnAdmin():

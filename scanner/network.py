@@ -4,7 +4,9 @@ class Interface:
 
     def __init__(self, interface_name: str) -> None:
         self.name = interface_name
-        self.MAC, self.ip = self._get_addrs()
+        self.MAC, ip = self._get_addrs()
+        self.ip_address = ip[0]
+        self.ip_mask = ip[1]
 
 
     def _get_addrs(self):
@@ -17,8 +19,14 @@ class Interface:
             # 2 is the code for AF_INET family
             if addr.family == 2:
                 ip_address = addr.address
-        return mac_address, ip_address
+                mask = addr.netmask
+        return mac_address, (ip_address, mask)
 
+
+class Packet:
+    
+    def __init__(self) -> None:
+        pass
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 import scanner.utils as utils
 from scanner.network import Interface
+from scapy.all import ARP, Ether, srp
+
 
 if __name__ == "__main__":
     
@@ -25,5 +27,21 @@ if __name__ == "__main__":
     
     # Creating interface object
     interface = Interface(interface)
+
+    # Getting the list of all the possible network addresses
+    targets = utils.get_all_network_addrs(interface)
+
+    # For each target ip we send an ARP request
+    print('---- HOSTS ----')
+    for target in targets:
+        arp_request = ARP(pdst=target) # ARP Request
+        ether_frame = Ether(dst='ff:ff:ff:ff:ff:ff')
+
+        packet = ether_frame/arp_request
+
+        temp = srp(packet, timeout = 0.01, verbose=False)[0]
+
+        for sent, received in temp:
+            print(f"IP: {received.psrc} - MAC: {received.hwsrc}")
     
     

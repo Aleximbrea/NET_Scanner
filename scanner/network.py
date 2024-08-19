@@ -1,4 +1,6 @@
 import psutil
+import struct
+import socket
 
 class Interface:
 
@@ -25,10 +27,32 @@ class Interface:
 
 class Packet:
     
-    def __init__(self) -> None:
-        pass
+    def __init__(self, interface: Interface, target_ip: str) -> None:
+        eth_header = struct.pack(
+            '!6s6sH',
+            bytes.fromhex('000000000000'), # Target MAC
+            bytes.fromhex(interface.MAC.replace('-', '')), # Source MAC
+            0x0806 # EtherType
+        )
+
+        arp_payload = struct.pack(
+            '!HHBBH6s4s6s4s',
+            0x0001, # Hardware Type
+            0x0800, # IPv4
+            6, # Hardware Address Length
+            4, # Protocol Address Length
+            0x0001, # Operation code
+            bytes.fromhex(interface.MAC.replace('-', '')), # Source MAC
+            socket.inet_aton(interface.ip_address), # Source IP
+            bytes.fromhex('000000000000'), # Target MAC
+            socket.inet_aton(target_ip) # Target IP
+        )
+
+        self.packet = eth_header + arp_payload
 
 
 if __name__ == "__main__":
-    pass
+    inter = Interface('Wi-Fi')
+    pack = Packet(inter, '192.168.0.1')
+    print(pack.packet)
 

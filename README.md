@@ -2,7 +2,7 @@
 
 ## Requirements
 - Python 3
-- Windows 10 / 11
+- Linux
 
 ## Get started
 

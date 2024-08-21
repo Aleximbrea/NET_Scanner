@@ -1,13 +1,18 @@
-import ctypes
+import os
 import sys
 import psutil
 from scanner.network import Interface
+import struct
+import binascii
+import socket
 
 def is_admin() -> bool:
-    if ctypes.windll.shell32.IsUserAnAdmin():
+    if os.geteuid() == 0:
         return True
     else:
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        # Se non si è root, lancia il comando con sudo
+        print("You are not root!")
+        os.execvp("sudo", ["sudo", sys.executable] + sys.argv)
         return False
     
 def get_interfaces() -> list:
@@ -52,3 +57,18 @@ def bin_to_ip(bin: str) -> str:
 
 def ip_to_bin(ip: str) -> str:
     return ''.join(f'{int(octet):08b}' for octet in ip.split('.'))
+
+def get_addresses(response):
+    sender_ip = None
+    sender_mac = None
+    ethernet_header = response[0:14]
+    ethertype = struct.unpack('!H', ethernet_header[12:14])[0]
+
+    if ethertype == 0x0806:
+        arp_header = response[14:42]
+        arp_data = struct.unpack('!HHBBH6s4s6s4s', arp_header)
+
+        if arp_data[4] == 2:
+            sender_mac = binascii.hexlify(arp_data[5]).decode()
+            sender_ip = socket.inet_ntoa(arp_data[6])
+    return sender_ip, sender_mac

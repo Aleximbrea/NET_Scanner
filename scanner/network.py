@@ -16,7 +16,7 @@ class Interface:
         # Looping through nethwork addresses
         for addr in addrs:
             # -1 is the code for AF_LINK family
-            if addr.family == -1:
+            if addr.family == 17:
                 mac_address = addr.address
             # 2 is the code for AF_INET family
             if addr.family == 2:
@@ -31,7 +31,7 @@ class Packet:
         eth_header = struct.pack(
             '!6s6sH',
             bytes.fromhex('000000000000'), # Target MAC
-            bytes.fromhex(interface.MAC.replace('-', '')), # Source MAC
+            bytes.fromhex(interface.MAC.replace(':', '')), # Source MAC
             0x0806 # EtherType
         )
 
@@ -42,7 +42,7 @@ class Packet:
             6, # Hardware Address Length
             4, # Protocol Address Length
             0x0001, # Operation code
-            bytes.fromhex(interface.MAC.replace('-', '')), # Source MAC
+            bytes.fromhex(interface.MAC.replace(':', '')), # Source MAC
             socket.inet_aton(interface.ip_address), # Source IP
             bytes.fromhex('000000000000'), # Target MAC
             socket.inet_aton(target_ip) # Target IP

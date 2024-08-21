@@ -8,9 +8,9 @@
 
 1. Check Python installation `python --version`
 2. Clone this repository
-3. Navigate to the directory with a terminal. **The terminal must have administrator privileges**
+3. Navigate to the directory with a terminal.
 4. Install packages ``pip install -r requirements.txt``
-5. Execute the script `python main.py`
+5. Execute the script `sudo python main.py`
 
 ## Description
 
@@ -21,9 +21,7 @@ Unfortunately i've found out that:
 > [!IMPORTANT]
 > Raw sockets are not supported on Windows
 
-So i resigned myself to using __scapy__.
-
-I will still keep the cool representation of the ethernet and arp frame.
+So i had to switch to Linux
 
 ## How it works
 
@@ -46,9 +44,6 @@ The **Payload** field contains the ARP request itself
 - **Hardware Type** is 1 for Ethernet
 - **Protocol Type** is 0x0800 for IPv4
 - **Operation** is 1 for ARP request, 2 for response
-
-> [!NOTE]
-> Since i'm using ***scapy*** all of this is managed by the module
 
 
 
